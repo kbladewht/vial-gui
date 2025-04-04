@@ -6,6 +6,7 @@ from autorefresh.autorefresh_thread import AutorefreshThread
 
 
 GUID_DEVINTERFACE_USB_DEVICE = "{A5DCBF10-6530-11D2-901F-00C04FB951ED}"
+GUID_DEVINTERFACE_HID_DEVICE = "{4D1E55B2-F16F-11CF-88CB-001111000030}"
 DEVICE_NOTIFY_ALL_INTERFACE_CLASSES = 4
 
 g_device_changes = 0
@@ -15,6 +16,7 @@ def device_changed(hwnd, msg, wp, lp):
     global g_device_changes
     if wp in [win32con.DBT_DEVICEARRIVAL, win32con.DBT_DEVICEREMOVECOMPLETE]:
         g_device_changes += 1
+    return 0  # ✅ 一定要返回一个 int
 
 
 class AutorefreshThreadWin(AutorefreshThread):
@@ -34,7 +36,7 @@ class AutorefreshThreadWin(AutorefreshThread):
 
         hdev = win32gui.RegisterDeviceNotification(
             hwnd,
-            win32gui_struct.PackDEV_BROADCAST_DEVICEINTERFACE(GUID_DEVINTERFACE_USB_DEVICE),
+            win32gui_struct.PackDEV_BROADCAST_DEVICEINTERFACE(GUID_DEVINTERFACE_HID_DEVICE),
             win32con.DEVICE_NOTIFY_WINDOW_HANDLE | DEVICE_NOTIFY_ALL_INTERFACE_CLASSES
         )
 
