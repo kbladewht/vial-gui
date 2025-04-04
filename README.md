@@ -24,15 +24,19 @@ Python 3.12 is recommended.
 Install dependencies:
 
 ```
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 To launch the application afterwards:
 
-```
-source venv/bin/activate
+```source venv/bin/activate
+
 pyinstaller misc/Vial.spec
 ./dist/Vial/Vial
+./dist/Vial/Vial > app.log 2>&1
 ```
+.\venv\Scripts\activate
+source venv/bin/activate
+python src/main/python/main.py

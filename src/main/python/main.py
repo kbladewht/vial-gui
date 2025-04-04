@@ -57,6 +57,7 @@ class VialApplicationContext():
 
     def __init__(self):
         self.bundle_dir = self.get_bundle_dir()
+        print(self.bundle_dir)
         self.vial_settings = self.load_vial_settings()
 
     @cached_property
