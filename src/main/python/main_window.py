@@ -13,6 +13,7 @@ import sys
 from about_keyboard import AboutKeyboard
 from autorefresh.autorefresh import Autorefresh
 from editor.combos import Combos
+from editor.combos2 import Combos2
 from constants import WINDOW_WIDTH, WINDOW_HEIGHT
 from widgets.editor_container import EditorContainer
 from editor.firmware_flasher import FirmwareFlasher
@@ -75,6 +76,7 @@ class MainWindow(QMainWindow):
         self.macro_recorder = MacroRecorder()
         self.tap_dance = TapDance()
         self.combos = Combos()
+        self.combos2 = Combos2()
         self.key_override = KeyOverride()
         QmkSettings.initialize(appctx)
         self.qmk_settings = QmkSettings()
@@ -82,7 +84,7 @@ class MainWindow(QMainWindow):
         self.rgb_configurator = RGBConfigurator()
 
         self.editors = [(self.keymap_editor, "Keymap"), (self.layout_editor, "Layout"), (self.macro_recorder, "Macros"),
-                        (self.rgb_configurator, "Lighting"), (self.tap_dance, "Tap Dance"), (self.combos, "Combos"),
+                        (self.rgb_configurator, "Lighting"), (self.tap_dance, "Tap Dance"),(self.combos, "Combos"),(self.combos2, "Combos2"),
                         (self.key_override, "Key Overrides"), (self.qmk_settings, "QMK Settings"),
                         (self.matrix_tester, "Matrix tester"), (self.firmware_flasher, "Firmware updater")]
 
@@ -309,7 +311,7 @@ class MainWindow(QMainWindow):
             self.autorefresh.current_device.keyboard.reload()
 
         for e in [self.layout_editor, self.keymap_editor, self.firmware_flasher, self.macro_recorder,
-                  self.tap_dance, self.combos, self.key_override, self.qmk_settings, self.matrix_tester,
+                  self.tap_dance, self.combos,self.combos2, self.key_override, self.qmk_settings, self.matrix_tester,
                   self.rgb_configurator]:
             e.rebuild(self.autorefresh.current_device)
 

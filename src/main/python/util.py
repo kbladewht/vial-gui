@@ -52,7 +52,7 @@ def hid_send(dev, msg, retries=1):
         first = False
         try:
             # add 00 at start for hidapi report id
-            data = b"\x05" + msg
+            data = b"\x01" + msg
             if dev.write(data) != MSG_LEN + 1:
                 continue
             logging.info("write {}".format(data.hex()))
