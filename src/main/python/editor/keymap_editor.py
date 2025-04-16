@@ -76,7 +76,9 @@ class KeymapEditor(BasicEditor):
         self.container.update()
 
     def on_keycode_changed(self, code):
+        print("on_keycode_changed start {}",code)
         self.set_key(code)
+        print("on_keycode_changed end {}",code)
 
     def rebuild_layers(self):
         # delete old layer labels
@@ -193,12 +195,13 @@ class KeymapEditor(BasicEditor):
 
         if self.container.active_key is None:
             return
-
+        print("set_key start66666 {}",keycode)
         if isinstance(self.container.active_key, EncoderWidget):
             self.set_key_encoder(keycode)
         else:
             self.set_key_matrix(keycode)
-
+        
+        print("set_key end 6666{}",keycode)
         self.container.select_next()
 
     def set_key_encoder(self, keycode):

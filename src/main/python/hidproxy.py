@@ -34,6 +34,9 @@ if sys.platform == "emscripten":
             # in the device descriptor
             dev = hid.device()
             data = hid_send(dev, struct.pack("BB", CMD_VIA_VIAL_PREFIX, CMD_VIAL_GET_KEYBOARD_ID), retries=20)
+            # //print("Received data **********:", data)
+            logging.info("*************Receivessssd data **********:", data)
+            uid = struct.unpack("8s", data[-8:])[0];
             uid = data[4:12]
             # here, a VIA keyboard will echo back all zeroes, while vial will return a valid UID
             # so if this looks like vial, inject the serial numebr

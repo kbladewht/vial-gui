@@ -40,3 +40,6 @@ pyinstaller misc/Vial.spec
 .\venv\Scripts\activate
 source venv/bin/activate
 python src/main/python/main.py
+
+cd src/main/python
+python -m test.test_keyboard 

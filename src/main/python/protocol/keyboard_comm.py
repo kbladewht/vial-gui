@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
+import logging
 import struct
 import json
 import lzma
@@ -70,7 +71,10 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
 
     def reload(self, sideload_json=None):
         """ Load information about the keyboard: number of layers, physical key layout """
+        logging.info("Load information about the keyboard: number of layers, physical key layout")
 
+        self.keys = []
+        self.encoders = []
         self.rowcol = OrderedDict()
         self.encoderpos = OrderedDict()
         self.layout = dict()
@@ -100,10 +104,11 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
         """ Get how many layers the keyboard has """
 
         self.layers = self.usb_send(self.dev, struct.pack("B", CMD_VIA_GET_LAYER_COUNT), retries=20)[1]
-
+        logging.info(f"self.layers = {self.layers}")
     def reload_via_protocol(self):
         data = self.usb_send(self.dev, struct.pack("B", CMD_VIA_GET_PROTOCOL_VERSION), retries=20)
         self.via_protocol = struct.unpack(">H", data[1:3])[0]
+        logging.info(f"self.via_protocol = {self.via_protocol}")
 
     def check_protocol_version(self):
         if self.via_protocol not in SUPPORTED_VIA_PROTOCOL or self.vial_protocol not in SUPPORTED_VIAL_PROTOCOL:
@@ -138,12 +143,20 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
                 payload += data
                 block += 1
                 sz -= MSG_LEN
+            # print(f"payload = {payload}")
+            print(f"payload (hex) = {payload.hex()}")
 
+        # parse the payload
+            print(f"payload decompess  = {lzma.decompress(payload)}")
             payload = json.loads(lzma.decompress(payload))
+
+            print(f"payload loads decompressed data = {payload}")
 
         self.check_protocol_version()
 
         self.definition = payload
+
+        logging.info(f"self.definition = {self.definition}")
 
         if "vial" in payload:
             vial = payload["vial"]
@@ -193,7 +206,7 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
 
     def reload_keymap(self):
         """ Load current key mapping from the keyboard """
-
+        print("reload_keymap")
         keymap = b""
         # calculate what the size of keymap will be and retrieve the entire binary buffer
         size = self.layers * self.rows * self.cols * 2
@@ -309,13 +322,16 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
                 self.settings[qsid] = QmkSettings.qsid_deserialize(qsid, data[1:])
 
     def set_key(self, layer, row, col, code):
+        print("set_key 2222222222222")
         key = (layer, row, col)
         if self.layout[key] != code:
             if code == RESET_KEYCODE:
                 Unlocker.unlock(self)
-
+            print("set_key Start.....")
             self.usb_send(self.dev, struct.pack(">BBBBH", CMD_VIA_SET_KEYCODE, layer, row, col,
                                                 Keycode.deserialize(code)), retries=20)
+            
+            print("set_key done......")
             self.layout[key] = code
 
     def set_encoder(self, layer, index, direction, code):
@@ -536,3 +552,7 @@ class Keyboard(ProtocolMacro, ProtocolDynamic, ProtocolTapDance, ProtocolCombo, 
     def set_vialrgb_color(self, h, s, v):
         self.rgb_hsv = (h, s, v)
         self._vialrgb_set_mode()
+
+    def set_radio_addr(self, value):
+        self.backlight_brightness = value
+        data =self.usb_send(self.dev, struct.pack(">BBB", CMD_VIA_LIGHTING_SET_VALUE, QMK_BACKLIGHT_BRIGHTNESS, value))

@@ -3,7 +3,7 @@
 
 a = Analysis(
     ['../src/main/python/main.py'],
-    pathex=[],
+    pathex=['c:\\msys64\\home\\w0011\\vial-gui_3.12py'],
     binaries=[],
     datas=[('../src/main/resources/base/qmk_settings.json', 'resources/base'), ('../src/build/settings/base.json', 'resources/settings'), ('../src/build/settings/linux.json', 'resources/settings'), ('../src/build/settings/mac.json', 'resources/settings')],
     hiddenimports=[],

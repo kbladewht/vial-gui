@@ -54,6 +54,7 @@ def hid_send(dev, msg, retries=1):
             # add 00 at start for hidapi report id
             data = b"\x05" + msg
             if dev.write(data) != MSG_LEN + 1:
+                logging.info("issue case {}".format(data.hex()))
                 continue
             logging.info("write {}".format(data.hex()))
 
